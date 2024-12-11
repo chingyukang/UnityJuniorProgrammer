@@ -17,9 +17,11 @@ public static class PlayerInfo
             System.IO.File.Create(bestInfoPath).Dispose();
         } else {
             string _info = System.IO.File.ReadAllText(bestInfoPath);
-            string[] _infoArr = _info.Split(':');
-            BestPlayer = _infoArr[0];
-            BestScore = int.Parse(_infoArr[1]);
+            if(!string.IsNullOrEmpty(_info)) {
+                string[] _infoArr = _info.Split(':');
+                BestPlayer = _infoArr[0];
+                BestScore = int.Parse(_infoArr[1]);
+            }
         }
     }
 
