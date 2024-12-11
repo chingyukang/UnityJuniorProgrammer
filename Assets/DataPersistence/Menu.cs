@@ -13,14 +13,17 @@ public class Menu : MonoBehaviour
     string scorePrefix = "Best Score :";
 
     private void Start() {
-        PlayerInfo.LoadPlayerInfo();
+        PlayerInfo.LoadBestInfo();
+        UpdateScore();
+    }
 
-        if(string.IsNullOrEmpty(PlayerInfo.CurrentName) || PlayerInfo.CurrentScore == 0) {
+    private void UpdateScore() {
+        if(string.IsNullOrEmpty(PlayerInfo.BestPlayer) || PlayerInfo.BestScore == 0) {
             scoreText.text = $"{scorePrefix} ---";
         } else {
-            scoreText.text = $"{scorePrefix} {PlayerInfo.CurrentName}:{PlayerInfo.CurrentScore}";
+            scoreText.text = $"{scorePrefix} {PlayerInfo.BestPlayer}:{PlayerInfo.BestScore}";
         }
-    }    
+    }
 
     public void OnNameChanged(string p_name) {
         if(!string.IsNullOrEmpty(p_name)) {
@@ -31,7 +34,13 @@ public class Menu : MonoBehaviour
     }
 
     public void OnClickStart() {
-        PlayerInfo.SetPlayerName(nameInput.text);
-        SceneManager.LoadScene("MainScene");
+        if(nameInput.text == "RESET") {
+            PlayerInfo.ResetBestInfo();
+            nameInput.text = "";
+            UpdateScore();
+        } else {
+            PlayerInfo.SetPlayerName(nameInput.text);
+            SceneManager.LoadScene("MainScene");
+        }
     }
 }
