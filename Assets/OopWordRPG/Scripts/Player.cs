@@ -53,7 +53,7 @@ namespace OopWordRPG {
             } else {
                 _gainExpMessage = $"{Name} 擊敗 {p_killedEnemy.Name} ，獲得 {p_killedEnemy.GenExp} 經驗值，目前經驗值 {Exp}/{MaxExp}";
             }
-            Debug.Log(_gainExpMessage);
+            Debug.Log($"<color=yellow>{_gainExpMessage}</color>");
             yield return null;
         }
 
