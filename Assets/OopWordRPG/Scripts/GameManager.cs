@@ -14,15 +14,17 @@ namespace OopWordRPG {
         private WaitForSeconds oneTimesInterval = new WaitForSeconds(1f);
         private WaitForSeconds twoTimesInterval = new WaitForSeconds(0.5f);
         private WaitForSeconds threeTimesInterval = new WaitForSeconds(0.3f);
+        private List<WaitForSeconds> fightIntervals = new List<WaitForSeconds>();
 
+        private int fightIntervalLevel = 0;
         private WaitForSeconds fightInterval;
 
         // Start is called before the first frame update
         void Start() {
             CreatePlayer();
             CreateEnemyPool();
+            InitFightIntervals();
 
-            fightInterval = oneTimesInterval;
             StartCoroutine(FightLoop());
         }
 
@@ -88,6 +90,23 @@ namespace OopWordRPG {
                 yield return StartCoroutine(player.GainExperience(currentEnemy));
             }
         }
-        
+
+        private void InitFightIntervals() {
+            fightIntervals.Clear();
+            fightIntervals.Add(oneTimesInterval);
+            fightIntervals.Add(twoTimesInterval);
+            fightIntervals.Add(threeTimesInterval);
+
+            fightIntervalLevel = 0;
+            fightInterval = fightIntervals[fightIntervalLevel];
+        }
+
+        private void OnGUI() {
+            if(GUI.Button(new Rect(10, 10, 100, 50), "¤Á´«³t«×")) {
+                fightIntervalLevel++;
+                fightIntervalLevel %= fightIntervals.Count;
+                fightInterval = fightIntervals[fightIntervalLevel];
+            }
+        }
     }
 }
