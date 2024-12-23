@@ -1,0 +1,93 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace OopWordRPG {
+    public class GameManager : MonoBehaviour {
+
+        private Player player = null;
+        private Enemy currentEnemy = null;
+        private List<Enemy> enemyPool = new List<Enemy>();
+
+        private int currentFightRound = 0;
+
+        private WaitForSeconds oneTimesInterval = new WaitForSeconds(1f);
+        private WaitForSeconds twoTimesInterval = new WaitForSeconds(0.5f);
+        private WaitForSeconds threeTimesInterval = new WaitForSeconds(0.3f);
+
+        private WaitForSeconds fightInterval;
+
+        // Start is called before the first frame update
+        void Start() {
+            CreatePlayer();
+            CreateEnemyPool();
+
+            fightInterval = oneTimesInterval;
+            StartCoroutine(FightLoop());
+        }
+
+        private void CreatePlayer() {
+            player = new Player("頭上兩點光");
+        }
+        private void CreateEnemyPool() {
+            enemyPool.Add(new Slime());
+            enemyPool.Add(new BigSlime());
+        }
+
+        private void CreateEnemy() {
+            currentEnemy = enemyPool[Random.Range(0, enemyPool.Count)];
+            currentEnemy.Initalize();
+            string _createEnemyMessage = $"{player.Name}Lv.{player.Level} 遭遇敵人 {currentEnemy.Name}Lv.{currentEnemy.Level}！";
+            Debug.Log($"<color=red>{_createEnemyMessage}</color>");
+        }
+
+        private IEnumerator FightLoop() {
+            while(true) {
+                CreateEnemy();
+                yield return StartCoroutine(StartFight());
+            }
+        }
+
+        private IEnumerator StartFight() {
+            currentFightRound = 0;
+            Role _first, _second;
+            if(player.Spd >= currentEnemy.Spd) {
+                _first = player;
+                _second = currentEnemy;
+            } else {
+                _first = currentEnemy;
+                _second = player;
+            }
+
+            string _attackResult = null;
+            while(true) {
+                currentFightRound++;
+                int _damage = _first.TryAttack();
+                _attackResult = _second.TakeDamage(_first, _damage);
+                Debug.Log(_attackResult);
+                if(_second.IsDead) { break; }
+
+                yield return fightInterval;
+
+                _damage = _second.TryAttack();
+                _attackResult = _first.TakeDamage(_second, _damage);
+                Debug.Log(_attackResult);
+                if(_first.IsDead) { break; }
+
+                yield return fightInterval;
+            }
+
+            // 戰鬥結束
+            yield return fightInterval;
+
+            if(player.IsDead) {
+                // 玩家死亡等待復活
+                yield return StartCoroutine(player.Resurrection(currentEnemy));
+            } else {
+                // 玩家勝利獲得經驗
+                yield return StartCoroutine(player.GainExperience(currentEnemy));
+            }
+        }
+        
+    }
+}
