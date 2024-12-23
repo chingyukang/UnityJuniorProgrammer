@@ -9,7 +9,7 @@ namespace OopWordRPG {
         public override int Level   { get; protected set; } = 1;
         public virtual  int MaxHp   { get; protected set; } = 100;
         public virtual  int MaxMp   { get; protected set; } = 50;
-        public virtual  int MaxExp  { get; protected set; } = 100;
+        public virtual  int MaxExp  { get; protected set; } = 50;
         public override int Hp      { get; protected set; } = 100;
         public override int Mp      { get; protected set; } = 50;
         public virtual  int Exp     { get; protected set; } = 0;
