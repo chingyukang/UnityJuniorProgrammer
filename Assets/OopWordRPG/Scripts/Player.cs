@@ -2,10 +2,12 @@ using System.Collections;
 using UnityEngine;
 
 namespace OopWordRPG {
+    // INHERITANCE
     public class Player : Role {
         private string playerName = "";
         public override string Name => playerName;
 
+        // ENCAPSULATION
         public override int Level   { get; protected set; } = 1;
         public virtual  int MaxHp   { get; protected set; } = 100;
         public virtual  int MaxMp   { get; protected set; } = 50;

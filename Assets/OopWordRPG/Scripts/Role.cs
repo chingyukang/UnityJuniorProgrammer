@@ -1,10 +1,12 @@
 using System;
 
 namespace OopWordRPG {
+    // ABSTRACTION
     public abstract class Role {
         public bool IsDead { get; protected set; } = false;
 
-        public abstract string Name { get; }
+        // ENCAPSULATION
+        public abstract string Name { get; }// ABSTRACTION
         public virtual int Level    { get; protected set; } = 1;
         public virtual int Hp       { get; protected set; } = 30;
         public virtual int Mp       { get; protected set; } = 10;
