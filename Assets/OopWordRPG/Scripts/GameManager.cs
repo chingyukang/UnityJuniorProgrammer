@@ -5,9 +5,11 @@ using UnityEngine;
 namespace OopWordRPG {
     public class GameManager : MonoBehaviour {
 
-        private Player player = null;
+        [SerializeField] private Player player;
         private Enemy currentEnemy = null;
-        private List<Enemy> enemyPool = new List<Enemy>();
+        [SerializeField] private EnemyList enemyPool;
+        [SerializeField] private RoleCardCtrl playerCardCtrl;
+        [SerializeField] private RoleCardCtrl enemyCardCtrl;
 
         private int currentFightRound = 0;
 
@@ -22,23 +24,22 @@ namespace OopWordRPG {
         // Start is called before the first frame update
         void Start() {
             CreatePlayer();
-            CreateEnemyPool();
             InitFightIntervals();
 
             StartCoroutine(FightLoop());
         }
 
         private void CreatePlayer() {
-            player = new Player("頭上兩點光");
-        }
-        private void CreateEnemyPool() {
-            enemyPool.Add(new Slime());
-            enemyPool.Add(new BigSlime());
+            player.InitPlayer("頭上兩點光");
+            playerCardCtrl.InitCard(player);
+            playerCardCtrl.ShowCard();
         }
 
         private void CreateEnemy() {
-            currentEnemy = enemyPool[Random.Range(0, enemyPool.Count)];
+            currentEnemy = enemyPool.GetRandomEnemy();
             currentEnemy.Initalize();
+            enemyCardCtrl.InitCard(currentEnemy);
+            enemyCardCtrl.ShowCard();
             string _createEnemyMessage = $"{player.Name}Lv.{player.Level} 遭遇敵人 {currentEnemy.Name}Lv.{currentEnemy.Level}！";
             Debug.Log($"<color=red>{_createEnemyMessage}</color>");
         }
@@ -46,6 +47,7 @@ namespace OopWordRPG {
         private IEnumerator FightLoop() {
             while(true) {
                 CreateEnemy();
+                yield return fightInterval;
                 yield return StartCoroutine(StartFight());
             }
         }
@@ -81,6 +83,7 @@ namespace OopWordRPG {
 
             // 戰鬥結束
             yield return fightInterval;
+            yield return fightInterval;
 
             if(player.IsDead) {
                 // 玩家死亡等待復活
@@ -102,7 +105,7 @@ namespace OopWordRPG {
         }
 
         private void OnGUI() {
-            if(GUI.Button(new Rect(10, 10, 100, 50), "切換速度")) {
+            if(GUI.Button(new Rect(10, 10, 100, 50), $"x{fightIntervalLevel+1}")) {
                 fightIntervalLevel++;
                 fightIntervalLevel %= fightIntervals.Count;
                 fightInterval = fightIntervals[fightIntervalLevel];

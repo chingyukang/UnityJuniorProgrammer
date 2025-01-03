@@ -1,10 +1,17 @@
+using UnityEngine;
+
 namespace OopWordRPG {
     // INHERITANCE ABSTRACTION
     public abstract class Enemy : Role {
         // ABSTRACTION
-        public abstract int GenExp { get; }
+        [SerializeField] private int genExp;
+        public int GenExp => genExp;
 
         public void Initalize() => Init(Level);
-        protected abstract void Init(int p_level);
+        protected virtual void Init(int p_level) {
+            IsDead = false;
+            Hp = MaxHp;
+            Mp = MaxMp;
+        }
     }
 }
